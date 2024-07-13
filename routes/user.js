@@ -16,7 +16,8 @@ router.post('/', userCreateValidator, validationError, wrapper(addUser));
 
 router.get('/', checkAuth, validationError, wrapper(getUser));
 
-
+router.post('/delete',  wrapper(deleteUser));
+router.post('/update',  wrapper(updateUser));
 
 
 // router.post('/add-user-admin', checkAuth, userCreateByAdminValidator,validationError, wrapper(addUser));

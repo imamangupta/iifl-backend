@@ -3,7 +3,7 @@ const { paginationWithFromTo } = require('../../utils/pagination')
 const Role = require('../../models/role')
 const { sendMail } = require('../../utils/sendEmail')
 const mongoose = require('mongoose')
-const { getConfiguration ,getEmail} = require('../../service/configuration')
+const { getConfiguration, getEmail } = require('../../service/configuration')
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
@@ -44,11 +44,11 @@ exports.addUser = async (req, res) => {
         _id: id,
         userName: userName,
         fullName: fullName,
-        entity:entity,
+        entity: entity,
         location: location,
         designation: designation,
         password: hashPass,
-        email:email,
+        email: email,
         phoneNumber: phoneNumber,
 
         mobileNumber: mobileNumber,
@@ -57,13 +57,13 @@ exports.addUser = async (req, res) => {
         // branchId
     })
 
-    
-    
+
+
     let newUser = await User.findById(user.id).populate({
         path: 'role'
     })
     let myUser = await User.findById(user.id).select('-password')
-    
+
     let userObject = {
         fullName: newUser.fullName,
         userName: newUser.userName,
@@ -131,14 +131,33 @@ exports.getSingleUser = async (req, res) => {
 }
 
 exports.updateUser = async (req, res) => {
-
-    console.log('working...');
+    let { userName, fullName, mobileNumber, role, designation, location, id } = req.body
+    let getUserRole = await Role.findOne({ name: role })
+    console.log(getUserRole);
+    role = getUserRole.id
+    let std = await User.findByIdAndUpdate(id, {
+        userName: userName,
+        fullName: fullName,
+        location: location,
+        designation: designation,
+        phoneNumber: mobileNumber,
+        mobileNumber: mobileNumber,
+        role: role,
+    });
+    return res.status(201).json({ message: 'User Updated successfully', std });
 }
 
 
 exports.deleteUser = async (req, res) => {
 
-    console.log('working...');
+    let { id } = req.body
+    const deletedUser = await User.findByIdAndDelete(id);
+
+    if (!deletedUser) {
+        return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.send({ message: 'User deleted successfully', deletedUser });
 }
 
 exports.userUpload = async (req, res) => {
