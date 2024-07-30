@@ -153,8 +153,19 @@ exports.postalDataDownload = async (req, res) => {
 exports.findState = async (req, res) => {
 
     try {
-        const data = await PostalAuction.distinct('STATE');
-        return res.status(200).json(data)
+        const data1 = await PostalAuction.distinct('STATE');
+        const data2 = await PostalDeficit.distinct('STATE');
+        const data4 = await PostalRefund.distinct('STATE');
+        const data3 = await PostalBranchShifting.distinct('STATE');
+        const data5 = await PostalMtm.distinct('STATE');
+
+        const allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
+
+        // Use Set to get unique values
+        const data = [...new Set(allStates)];
+
+        // Send response with unique values
+        return res.status(200).json(data);
     } catch (error) {
         console.error(error);
         return res.status(500).json({ error: "some thing went worng..." });
@@ -168,7 +179,16 @@ exports.findCity = async (req, res) => {
     try {
 
         let query = { STATE: state };
-        const data = await PostalAuction.distinct('CITY', query);
+        const data1 = await PostalAuction.distinct('CITY', query);
+        const data2 = await PostalDeficit.distinct('CITY', query);
+        const data3 = await PostalRefund.distinct('CITY', query);
+        const data4 = await PostalBranchShifting.distinct('CITY', query);
+        const data5 = await PostalMtm.distinct('CITY', query);
+        
+        const allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
+
+        // Use Set to get unique values
+        const data = [...new Set(allStates)];
 
         return res.status(200).json(data)
     } catch (error) {

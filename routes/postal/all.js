@@ -5,8 +5,8 @@ const { wrapper } = require('../../utils/errorWrapper');
 const checkAuth = require('../../middleware/checkAuth');
 
 
-router.get('/',wrapper(allData));
-router.get('/download',wrapper(postalDataDownload));
+router.get('/',checkAuth,wrapper(allData));
+router.get('/download',checkAuth,wrapper(postalDataDownload));
 router.get('/getstate',wrapper(findState));
 router.get('/getcity',wrapper(findCity));
 

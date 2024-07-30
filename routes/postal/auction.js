@@ -5,7 +5,7 @@ const { wrapper } = require('../../utils/errorWrapper');
 const checkAuth = require('../../middleware/checkAuth');
 
 router.post('/',checkAuth,wrapper(addPost));
-router.get('/',wrapper(fAll));
+router.get('/',checkAuth,wrapper(fAll));
 
 
 
