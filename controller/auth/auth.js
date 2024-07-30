@@ -131,7 +131,9 @@ exports.userLoginWithOtp = async (req, res) => {
 
 // working...
 exports.chechStatus = async (req, res) => {
-    return res.status(200).json({ message: 'success' });
+    return res.status(200).json({   message: "auth Success",
+        // redirectUrl: `${configuration.authFailedUrl}`,
+        isAuthenticated: true });
 };
 
 //remaining..
