@@ -172,10 +172,17 @@ exports.findState = async (req, res) => {
                 const data5 = await PostalMtm.distinct('STATE');
                 allStates = [ ...data5];
                
-            }else if(type==='branchShifting'){
+            }else if(type==='branchshifting'){
                 const data5 = await PostalBranchShifting.distinct('STATE');
                 allStates = [ ...data5];
+            }else if(type==='all'){
+                const data1 = await PostalAuction.distinct('STATE');
+                const data2 = await PostalDeficit.distinct('STATE');
+                const data4 = await PostalRefund.distinct('STATE');
+                const data3 = await PostalBranchShifting.distinct('STATE');
+                const data5 = await PostalMtm.distinct('STATE');
                 
+                allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
             }else{
                 allStates = [ ];
             }
@@ -225,10 +232,17 @@ exports.findCity = async (req, res) => {
                 const data5 = await PostalMtm.distinct('CITY', query);
                 allStates = [ ...data5];
                
-            }else if(type==='branchShifting'){
+            }else if(type==='branchshifting'){
                 const data4 = await PostalBranchShifting.distinct('CITY', query);
                 allStates = [ ...data4];
+            }else if(type==='all'){
+                const data1 = await PostalAuction.distinct('CITY', query);
+                const data2 = await PostalDeficit.distinct('CITY', query);
+                const data3 = await PostalRefund.distinct('CITY', query);
+                const data4 = await PostalBranchShifting.distinct('CITY', query);
+                const data5 = await PostalMtm.distinct('CITY', query);
                 
+                allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
             }else{
                 allStates = [ ];
             }
