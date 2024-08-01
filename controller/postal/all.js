@@ -151,18 +151,47 @@ exports.postalDataDownload = async (req, res) => {
 
 // get state
 exports.findState = async (req, res) => {
+    const { type } = req.query;
 
     try {
-        const data1 = await PostalAuction.distinct('STATE');
-        const data2 = await PostalDeficit.distinct('STATE');
-        const data4 = await PostalRefund.distinct('STATE');
-        const data3 = await PostalBranchShifting.distinct('STATE');
-        const data5 = await PostalMtm.distinct('STATE');
+        let allStates;
+        if(type){
+            if (type === 'auction') {
+                const data2 = await PostalAuction.distinct('STATE');
+                allStates = [ ...data2, ];
+               
+            }else if(type==='deficit'){
+                const data2 = await PostalDeficit.distinct('STATE');                
+                allStates = [...data2];
+              
+            }else if(type==='refund'){              
+                const data4 = await PostalRefund.distinct('STATE');                
+                allStates = [ ...data4, ];
+              
+            }else if(type==='mtm'){
+                const data5 = await PostalMtm.distinct('STATE');
+                allStates = [ ...data5];
+               
+            }else if(type==='branchShifting'){
+                const data5 = await PostalBranchShifting.distinct('STATE');
+                allStates = [ ...data5];
+                
+            }else{
+                allStates = [ ];
+            }
+         
+        }else{
 
-        const allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
-
-        // Use Set to get unique values
+            const data1 = await PostalAuction.distinct('STATE');
+            const data2 = await PostalDeficit.distinct('STATE');
+            const data4 = await PostalRefund.distinct('STATE');
+            const data3 = await PostalBranchShifting.distinct('STATE');
+            const data5 = await PostalMtm.distinct('STATE');
+            
+            allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
+        }   
         const data = [...new Set(allStates)];
+       
 
         // Send response with unique values
         return res.status(200).json(data);
@@ -175,18 +204,45 @@ exports.findState = async (req, res) => {
 // get state my city
 exports.findCity = async (req, res) => {
 
-    const { state } = req.query;
+    const { state,type } = req.query;
     try {
-
+        let allStates;
         let query = { STATE: state };
-        const data1 = await PostalAuction.distinct('CITY', query);
-        const data2 = await PostalDeficit.distinct('CITY', query);
-        const data3 = await PostalRefund.distinct('CITY', query);
-        const data4 = await PostalBranchShifting.distinct('CITY', query);
-        const data5 = await PostalMtm.distinct('CITY', query);
-        
-        const allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
+        if(type){
+            if (type === 'auction') {
+                const data1 = await PostalAuction.distinct('CITY', query);
+                allStates = [ ...data1, ];
+               
+            }else if(type==='deficit'){
+                const data2 = await PostalDeficit.distinct('CITY', query);      
+                allStates = [...data2];
+              
+            }else if(type==='refund'){              
+                const data3 = await PostalRefund.distinct('CITY', query);               
+                allStates = [ ...data3, ];
+              
+            }else if(type==='mtm'){
+                const data5 = await PostalMtm.distinct('CITY', query);
+                allStates = [ ...data5];
+               
+            }else if(type==='branchShifting'){
+                const data4 = await PostalBranchShifting.distinct('CITY', query);
+                allStates = [ ...data4];
+                
+            }else{
+                allStates = [ ];
+            }
+         
+        }else{
 
+            const data1 = await PostalAuction.distinct('CITY', query);
+            const data2 = await PostalDeficit.distinct('CITY', query);
+            const data3 = await PostalRefund.distinct('CITY', query);
+            const data4 = await PostalBranchShifting.distinct('CITY', query);
+            const data5 = await PostalMtm.distinct('CITY', query);
+            
+            allStates = [...data1, ...data2, ...data3, ...data4, ...data5];
+        }
         // Use Set to get unique values
         const data = [...new Set(allStates)];
 
