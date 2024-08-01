@@ -266,3 +266,80 @@ exports.findCity = async (req, res) => {
         return res.status(500).json({ error: "some thing went worng..." });
     }
 }
+
+
+// Chart data
+exports.chartData = async (req, res) => {
+
+    const { state,type } = req.query;
+    try {
+        let limit = 10
+
+        // Aggregate pipeline to group by STATE, count documents, sort by count in descending order
+        const topStatesPipeline = [
+            {
+                $group: {
+                    _id: '$STATE', // Group by STATE field
+                    count: { $sum: 1 } // Count documents in each group
+                }
+            },
+            {
+                $sort: { count: -1 } // Sort by count in descending order
+            },
+            {
+                $limit: limit // Limit results to top N states
+            }
+        ];
+
+        const topStates = await PostalAuction.aggregate(topStatesPipeline);
+
+        // Aggregate pipeline to calculate the "Others" count
+        const othersPipeline = [
+            {
+                $group: {
+                    _id: '$STATE',
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $sort: { count: -1 }
+            },
+            {
+                $skip: limit // Skip the top N states
+            },
+            {
+                $group: {
+                    _id: 'Other', // Group remaining states as "Other"
+                    count: { $sum: '$count' } // Sum their counts
+                }
+            }
+        ];
+
+        const others = await PostalAuction.aggregate(othersPipeline);
+
+        // Combine the top states and the "Others" entry
+        const result = topStates.concat(others);
+
+        const pipeline = [
+            {
+                $group: {
+                    _id: '$STATUS', // Group by STATUS field
+                    count: { $sum: 1 } // Count documents in each group
+                }
+            },
+            {
+                $sort: { count: -1 } // Optional: Sort by count in descending order
+            }
+        ];
+
+        // Execute aggregation pipeline
+        const statusCounts = await PostalAuction.aggregate(pipeline);
+
+
+
+        return res.status(200).json({topStates:result,deliver:statusCounts})
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: "some thing went worng..." });
+    }
+}
